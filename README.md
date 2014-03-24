@@ -1,2 +1,2 @@
-volley-request-manager-lite
+IN DEVELOPMENT
 ===========================
