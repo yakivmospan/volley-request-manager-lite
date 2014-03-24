@@ -8,6 +8,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 import android.content.Context;
@@ -19,37 +20,50 @@ import android.os.Build;
 import java.io.File;
 import java.util.concurrent.Executors;
 
-public class RequestQueueFactory {
+public class RequestFactory {
 
-    public static RequestQueue getQueue(Context context, String name) {
-        RequestQueue result = null;
+    public static interface Options {
 
-        if (RequestOptions.DEFAULT_QUEUE.equals(name)) {
-            result = getDefault(context);
-        }
-        if (RequestOptions.BACKGROUND_QUEUE.equals(name)) {
-            result = newBackgroundQueue(context);
-        }
+        public static final String REQUEST_CACHE_PATH = "volley/request";
+        public static final String IMAGE_CACHE_PATH = "volley/image";
+        public static final int DEFAULT_POOL_SIZE = 4;
 
-        return result;
+        public static final int DEFAULT_DISK_USAGE_BYTES = 50 * 1024 * 1024;
     }
 
-    public static RequestQueue getDefault(Context context) {
+    public static ImageLoader newDefaultLoader(Context context) {
+        return newLoader(newDefaultImageQueue(context), new BitmapLruCache());
+    }
+
+    public static ImageLoader newLoader(RequestQueue queue, BitmapLruCache cache) {
+        return new ImageLoader(queue, cache);
+    }
+
+    public static ImageLoader newLoader(Context context, int cacheSize) {
+        return newLoader(RequestFactory.newDefaultImageQueue(context),
+                new BitmapLruCache(cacheSize));
+    }
+
+    public static ImageLoader newLoader(Context context, BitmapLruCache cache) {
+        return newLoader(RequestFactory.newDefaultImageQueue(context), cache);
+    }
+
+    public static RequestQueue newDefaultQueue(Context context) {
         return Volley.newRequestQueue(context.getApplicationContext());
     }
 
-    public static RequestQueue getImageDefault(Context context) {
+    public static RequestQueue newDefaultImageQueue(Context context) {
         return newImageQueue(context.getApplicationContext(), null,
-                RequestOptions.DEFAULT_POOL_SIZE);
+                Options.DEFAULT_POOL_SIZE);
     }
 
     public static RequestQueue newBackgroundQueue(Context context) {
-        return newBackgroundQueue(context, null, RequestOptions.DEFAULT_POOL_SIZE);
+        return newBackgroundQueue(context, null, Options.DEFAULT_POOL_SIZE);
     }
 
     public static RequestQueue newBackgroundQueue(Context context, HttpStack stack,
             int threadPoolSize) {
-        File cacheDir = new File(context.getCacheDir(), RequestOptions.REQUEST_CACHE_PATH);
+        File cacheDir = new File(context.getCacheDir(), Options.REQUEST_CACHE_PATH);
 
         if (stack == null) {
             stack = createStack(context);
@@ -78,7 +92,7 @@ public class RequestQueueFactory {
             rootCache = context.getCacheDir();
         }
 
-        File cacheDir = new File(rootCache, RequestOptions.IMAGE_CACHE_PATH);
+        File cacheDir = new File(rootCache, Options.IMAGE_CACHE_PATH);
         cacheDir.mkdirs();
 
         if (stack == null) {
@@ -87,7 +101,7 @@ public class RequestQueueFactory {
 
         BasicNetwork network = new BasicNetwork(stack);
         DiskBasedCache diskBasedCache = new DiskBasedCache(cacheDir,
-                RequestOptions.DEFAULT_DISK_USAGE_BYTES);
+                Options.DEFAULT_DISK_USAGE_BYTES);
 
         RequestQueue queue = new RequestQueue(diskBasedCache, network, threadPoolSize);
         queue.start();
@@ -116,6 +130,4 @@ public class RequestQueueFactory {
 
         return result;
     }
-
-
 }
