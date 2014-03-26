@@ -20,7 +20,7 @@ import android.os.Build;
 import java.io.File;
 import java.util.concurrent.Executors;
 
-public class RequestFactory {
+public class RequestQueueFactory {
 
     public static interface Options {
 
@@ -40,12 +40,12 @@ public class RequestFactory {
     }
 
     public static ImageLoader newLoader(Context context, int cacheSize) {
-        return newLoader(RequestFactory.newDefaultImageQueue(context),
+        return newLoader(RequestQueueFactory.newDefaultImageQueue(context),
                 new BitmapLruCache(cacheSize));
     }
 
     public static ImageLoader newLoader(Context context, BitmapLruCache cache) {
-        return newLoader(RequestFactory.newDefaultImageQueue(context), cache);
+        return newLoader(RequestQueueFactory.newDefaultImageQueue(context), cache);
     }
 
     public static RequestQueue newDefaultQueue(Context context) {
@@ -70,7 +70,7 @@ public class RequestFactory {
         }
 
         // important part
-//        int threadPoolSize = 10; // number of network dispatcher threads to create
+        // int threadPoolSize = 10; // number of network dispatcher threads to create
         // pass Executor to constructor of ResponseDelivery object
         ResponseDelivery delivery = new ExecutorDelivery(
                 Executors.newFixedThreadPool(threadPoolSize));

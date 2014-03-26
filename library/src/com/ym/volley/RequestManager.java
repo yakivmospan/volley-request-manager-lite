@@ -3,8 +3,7 @@ package com.ym.volley;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import android.content.Context;
 
@@ -57,44 +56,56 @@ public class RequestManager {
         private RequestQueue mQueue;
 
         public RequestController(Context context) {
-            RequestQueue requestQueue = RequestFactory.newDefaultQueue(context);
+            RequestQueue requestQueue = RequestQueueFactory.newDefaultQueue(context);
         }
 
-        public void doJORequest(RequestParams params) {
-            Request request = new JsonObjectRequest(
-                    params.method,
-                    params.url,
-                    params.jsonObject,
-                    params.listenerJO,
-                    params.errorListener);
-
-            getQueue(params).add(request);
+        public RequestController doRequest(Request request) {
+            mQueue.add(request);
+            return this;
         }
 
-        public void doJARequest(RequestParams params) {
-            Request request = new JsonArrayRequest(
-                    params.url,
-                    params.listenerJA,
-                    params.errorListener);
-
-            getQueue(params).add(request);
+        public RequestController doRequest(Request request, RequestQueue queue) {
+            queue.add(request);
+            return this;
         }
 
-        private RequestQueue getQueue(RequestParams params) {
-            return params.queue == null ? mQueue : params.queue;
+        public RequestQueue getQueue() {
+            return mQueue;
         }
     }
 
-    class ImageLoaderController {
+    public class ImageLoaderController {
 
         private ImageLoader mImageLoader;
 
         public ImageLoaderController(Context context) {
-            mImageLoader = RequestFactory.newDefaultLoader(context);
+            mImageLoader = RequestQueueFactory.newDefaultLoader(context);
         }
 
-        public void load() {
+        public ImageLoaderController doLoad(String url, NetworkImageView view) {
+            view.setImageUrl(url, mImageLoader);
+            return this;
+        }
 
+        public ImageLoaderController doLoad(String url, NetworkImageView view,
+                ImageLoader imageLoader) {
+            view.setImageUrl(url, mImageLoader);
+            return this;
+        }
+
+        public ImageLoaderController doLoad(String url, ImageLoader.ImageListener imageListener) {
+            mImageLoader.get(url, imageListener);
+            return this;
+        }
+
+        public ImageLoaderController doLoad(String url, ImageLoader.ImageListener imageListener,
+                ImageLoader imageLoader) {
+            imageLoader.get(url, imageListener);
+            return this;
+        }
+
+        public ImageLoader getImageLoader() {
+            return mImageLoader;
         }
     }
 }
