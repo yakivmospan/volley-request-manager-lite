@@ -39,7 +39,7 @@ public class RequestHelper {
                         RequestHelper.createHttpStack(context)),
                 RequestHelper.DEFAULT_POOL_SIZE
         );
-
+        queue.start();
         return new ImageLoader(queue, new ImageManager.Cache());
     }
 
@@ -53,7 +53,7 @@ public class RequestHelper {
                         RequestHelper.createHttpStack(context)),
                 RequestHelper.DEFAULT_POOL_SIZE
         );
-
+        queue.start();
         return queue;
     }
 
