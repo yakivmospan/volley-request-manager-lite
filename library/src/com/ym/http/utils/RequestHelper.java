@@ -43,7 +43,7 @@ public class RequestHelper {
         return new ImageLoader(queue, new ImageManager.Cache());
     }
 
-    public static ImageLoader newRedirectRequestQueue(Context context) {
+    public static RequestQueue newRedirectRequestQueue(Context context) {
         DiskBasedCache cache = new DiskBasedCache(
                 RequestHelper.createInternalCacheDir(context, RequestHelper.REQUEST_CACHE_PATH));
 
@@ -54,7 +54,7 @@ public class RequestHelper {
                 RequestHelper.DEFAULT_POOL_SIZE
         );
 
-        return new ImageLoader(queue, new ImageManager.Cache());
+        return queue;
     }
 
     public static File createCacheDir(Context context, String path) {
