@@ -3,7 +3,6 @@ package com.ym.http;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
-import com.ym.http.utils.RequestHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -45,7 +44,7 @@ public class ImageManager {
         public ImageLoaderController(Context context) {
             mImageLoader = new ImageLoader(
                     Volley.newRequestQueue(context.getApplicationContext()),
-                    new Cache(RequestHelper.DEFAULT_DISK_USAGE_BYTES));
+                    new Cache(50 * 1024 * 1024));
         }
 
         public ImageLoaderController doLoad(String url, NetworkImageView view) {
