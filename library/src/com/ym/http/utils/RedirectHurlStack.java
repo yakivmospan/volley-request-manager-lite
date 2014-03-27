@@ -1,4 +1,4 @@
-package com.ym.volley;
+package com.ym.http.utils;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -32,7 +32,7 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * An {@link com.android.volley.toolbox.HttpStack} based on {@link java.net.HttpURLConnection}.
  */
-class RedirectHurlStack implements HttpStack {
+public class RedirectHurlStack implements HttpStack {
 
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
 
