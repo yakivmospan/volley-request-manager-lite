@@ -1,19 +1,13 @@
 package com.ym.http;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import com.ym.http.utils.RequestHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-
-/**
- * Created by Yakiv M. on 27.03.14.
- */
 
 public class ImageManager {
 
@@ -49,18 +43,9 @@ public class ImageManager {
         private ImageLoader mImageLoader;
 
         public ImageLoaderController(Context context) {
-            DiskBasedCache cache = new DiskBasedCache(
-                    RequestHelper.createCacheDir(context, RequestHelper.IMAGE_CACHE_PATH),
-                    RequestHelper.DEFAULT_DISK_USAGE_BYTES);
-
-            RequestQueue queue = new RequestQueue(
-                    cache,
-                    RequestHelper
-                            .createNetwork(new HurlStack(), RequestHelper.createHttpStack(context)),
-                    RequestHelper.DEFAULT_POOL_SIZE
-            );
-
-            mImageLoader = new ImageLoader(queue,new Cache(RequestHelper.DEFAULT_DISK_USAGE_BYTES));
+            mImageLoader = new ImageLoader(
+                    Volley.newRequestQueue(context.getApplicationContext()),
+                    new Cache(RequestHelper.DEFAULT_DISK_USAGE_BYTES));
         }
 
         public ImageLoaderController doLoad(String url, NetworkImageView view) {
