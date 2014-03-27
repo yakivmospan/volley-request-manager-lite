@@ -6,8 +6,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.defaultproject.R;
+import com.ym.http.ImageManager;
+import com.ym.http.RequestManager;
 import com.ym.utils.L;
-import com.ym.volley.RequestManager;
 
 import org.json.JSONObject;
 
@@ -35,7 +36,7 @@ public class MainActivity
                 mErrorListener);
         RequestManager.queue().doRequest(request);
 
-        RequestManager.loader().doLoad(
+        ImageManager.loader().doLoad(
                 "http://farm6.staticflickr.com/5475/10375875123_75ce3080c6_b.jpg",
                 mImageListener);
     }
