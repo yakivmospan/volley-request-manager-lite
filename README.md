@@ -1,3 +1,5 @@
+[You can find arcticle here][0]
+
 ### Usage example
 
 ```java
@@ -45,3 +47,5 @@ ImageManager.loader().doLoad(
         "http://farm6.staticflickr.com/5475/10375875123_75ce3080c6_b.jpg",
         ImageManager.loader.instance()); // to use default ImageLoader       
 ```
+
+[0]: https://github.com/yakivmospan/yakivmospan/blob/master/articles/android/http/Volley%20Request%20Manager%20-%20Lite.md
