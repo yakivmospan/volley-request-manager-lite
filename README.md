@@ -1,6 +1,6 @@
-[You can find arcticle here][0]
+### Volley Request Manager - Lite
 
-### Usage example
+[You can find arcticle here][0]
 
 ```java
 // init component that for request processing
