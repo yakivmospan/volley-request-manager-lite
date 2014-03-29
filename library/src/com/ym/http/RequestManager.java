@@ -52,7 +52,7 @@ public class RequestManager {
             return this;
         }
 
-        public RequestQueue getQueue() {
+        public RequestQueue instance() {
             return mQueue;
         }
     }

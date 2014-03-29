@@ -69,7 +69,7 @@ public class ImageManager {
             return this;
         }
 
-        public ImageLoader getImageLoader() {
+        public ImageLoader instance() {
             return mImageLoader;
         }
     }
