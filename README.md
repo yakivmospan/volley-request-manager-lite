@@ -3,7 +3,7 @@
 [You can find arcticle here][0]
 
 ```java
-// init component that for request processing
+// init component for request processing
 RequestManager.initializeWith(getApplicationContext());
 
 // create request
