@@ -1,6 +1,5 @@
 package com.ym.http;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
@@ -9,11 +8,11 @@ import android.content.Context;
 public class RequestManager {
 
     private static RequestManager mInstance;
-    private RequestController mRequestController;
+    private RequestQueue mQueue;
 
     private RequestManager(Context context) {
         Context applicationContext = context.getApplicationContext();
-        mRequestController = new RequestController(applicationContext);
+        mQueue = Volley.newRequestQueue(applicationContext);
     }
 
     public static synchronized void initializeWith(Context context) {
@@ -22,38 +21,15 @@ public class RequestManager {
         }
     }
 
-    public static synchronized RequestController queue() {
+    public static synchronized RequestQueue queue() {
         if (mInstance == null) {
             throw new IllegalStateException(RequestManager.class.getSimpleName() +
                     " is not initialized, call initializeWith(..) method first.");
         }
-        return mInstance.getRequestController();
+        return mInstance.getQueue();
     }
 
-    private RequestController getRequestController() {
-        return mRequestController;
-    }
-
-    public class RequestController {
-
-        private RequestQueue mQueue;
-
-        public RequestController(Context context) {
-            mQueue = Volley.newRequestQueue(context.getApplicationContext());
-        }
-
-        public RequestController doRequest(Request request) {
-            mQueue.add(request);
-            return this;
-        }
-
-        public RequestController doRequest(Request request, RequestQueue queue) {
-            queue.add(request);
-            return this;
-        }
-
-        public RequestQueue instance() {
-            return mQueue;
-        }
+    public RequestQueue getQueue() {
+        return mQueue;
     }
 }

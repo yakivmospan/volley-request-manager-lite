@@ -1,7 +1,6 @@
 package com.ym.http;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 
 import android.content.Context;
@@ -11,12 +10,14 @@ import android.support.v4.util.LruCache;
 public class ImageManager {
 
     private static ImageManager mInstance;
-    private ImageLoaderController mImageLoaderController;
+    private ImageLoader mImageLoader;
 
 
     private ImageManager(Context context) {
         Context applicationContext = context.getApplicationContext();
-        mImageLoaderController = new ImageLoaderController(applicationContext);
+        mImageLoader = new ImageLoader(
+                Volley.newRequestQueue(applicationContext),
+                new Cache(50 * 1024 * 1024));
     }
 
     public static synchronized void initializeWith(Context context) {
@@ -25,53 +26,16 @@ public class ImageManager {
         }
     }
 
-    public static synchronized ImageLoaderController loader() {
+    public static synchronized ImageLoader loader() {
         if (mInstance == null) {
             throw new IllegalStateException(ImageManager.class.getSimpleName() +
                     " is not initialized, call initializeWith(..) method first.");
         }
-        return mInstance.getImageLoaderController();
+        return mInstance.getImageLoader();
     }
 
-    private ImageLoaderController getImageLoaderController() {
-        return mImageLoaderController;
-    }
-
-    public class ImageLoaderController {
-
-        private ImageLoader mImageLoader;
-
-        public ImageLoaderController(Context context) {
-            mImageLoader = new ImageLoader(
-                    Volley.newRequestQueue(context.getApplicationContext()),
-                    new Cache(50 * 1024 * 1024));
-        }
-
-        public ImageLoaderController doLoad(String url, NetworkImageView view) {
-            view.setImageUrl(url, mImageLoader);
-            return this;
-        }
-
-        public ImageLoaderController doLoad(String url, NetworkImageView view,
-                ImageLoader imageLoader) {
-            view.setImageUrl(url, mImageLoader);
-            return this;
-        }
-
-        public ImageLoaderController doLoad(String url, ImageLoader.ImageListener imageListener) {
-            mImageLoader.get(url, imageListener);
-            return this;
-        }
-
-        public ImageLoaderController doLoad(String url, ImageLoader.ImageListener imageListener,
-                ImageLoader imageLoader) {
-            imageLoader.get(url, imageListener);
-            return this;
-        }
-
-        public ImageLoader instance() {
-            return mImageLoader;
-        }
+    public ImageLoader getImageLoader() {
+        return mImageLoader;
     }
 
     public static class Cache

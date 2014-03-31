@@ -30,13 +30,13 @@ public class MainActivity
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
-                HttpFactory.createTestUrl(),
+                HttpUtils.createTestUrl(),
                 null,
                 mListener,
                 mErrorListener);
-        RequestManager.queue().doRequest(request);
+        RequestManager.queue().add(request);
 
-        ImageManager.loader().doLoad(
+        ImageManager.loader().get(
                 "http://farm6.staticflickr.com/5475/10375875123_75ce3080c6_b.jpg",
                 mImageListener);
     }
