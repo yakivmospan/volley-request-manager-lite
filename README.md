@@ -30,7 +30,7 @@ ImageManager.loader().get(
 // load image with NetworkImageView
 NetworkImageView view = new NetworkImageView(context);
 
-view.view.setImageUrl(
+view.setImageUrl(
         "http://farm6.staticflickr.com/5475/10375875123_75ce3080c6_b.jpg",
         ImageManager.loader()); // to use default ImageLoader
 ```
