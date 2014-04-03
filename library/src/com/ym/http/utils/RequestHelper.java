@@ -31,11 +31,10 @@ public class RequestHelper {
         return newRedirectRequestQueue(context, cache);
     }
 
-    public static RequestQueue newRedirectRequestQueue(Context context,  DiskBasedCache cache) {
+    public static RequestQueue newRedirectRequestQueue(Context context, DiskBasedCache cache) {
         RequestQueue queue = new RequestQueue(
                 cache,
-                RequestHelper.createNetwork(new RedirectHurlStack(),
-                        RequestHelper.createHttpStack(context)),
+                RequestHelper.createNetwork(context, new RedirectHurlStack()),
                 RequestHelper.DEFAULT_POOL_SIZE
         );
         queue.start();
@@ -68,12 +67,12 @@ public class RequestHelper {
         return delivery;
     }
 
-    public static Network createNetwork(HttpStack afterNineSDK, HttpStack beforeNineSDK) {
+    public static Network createNetwork(Context context, HttpStack afterNineSDK) {
         HttpStack stack = null;
         if (Build.VERSION.SDK_INT >= 9) {
             stack = afterNineSDK;
         } else {
-            stack = beforeNineSDK;
+            stack = RequestHelper.createHttpStack(context);
         }
 
         return new BasicNetwork(stack);
