@@ -8,15 +8,12 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.ImageLoader;
-import com.ym.http.ImageManager;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
-import android.support.v4.util.LruCache;
 
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -28,25 +25,13 @@ public class RequestHelper {
     public static final int DEFAULT_POOL_SIZE = 4;
     public static final int DEFAULT_DISK_USAGE_BYTES = 50 * 1024 * 1024;
 
-    public static ImageLoader newRedirectImageLoader(Context context, LruCache lruCache) {
+    public static RequestQueue newRedirectRequestQueue(Context context, String cachePath) {
         DiskBasedCache cache = new DiskBasedCache(
-                RequestHelper.createCacheDir(context, RequestHelper.IMAGE_CACHE_PATH),
-                RequestHelper.DEFAULT_DISK_USAGE_BYTES);
-
-        RequestQueue queue = new RequestQueue(
-                cache,
-                RequestHelper.createNetwork(new RedirectHurlStack(),
-                        RequestHelper.createHttpStack(context)),
-                RequestHelper.DEFAULT_POOL_SIZE
-        );
-        queue.start();
-        return new ImageLoader(queue, new ImageManager.Cache());
+                RequestHelper.createInternalCacheDir(context, cachePath));
+        return newRedirectRequestQueue(context, cache);
     }
 
-    public static RequestQueue newRedirectRequestQueue(Context context) {
-        DiskBasedCache cache = new DiskBasedCache(
-                RequestHelper.createInternalCacheDir(context, RequestHelper.REQUEST_CACHE_PATH));
-
+    public static RequestQueue newRedirectRequestQueue(Context context,  DiskBasedCache cache) {
         RequestQueue queue = new RequestQueue(
                 cache,
                 RequestHelper.createNetwork(new RedirectHurlStack(),
