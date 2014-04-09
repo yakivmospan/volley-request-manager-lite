@@ -1,5 +1,7 @@
 package com.ym.http;
 
+import com.android.volley.Cache;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
@@ -10,14 +12,14 @@ import android.support.v4.util.LruCache;
 public class ImageManager {
 
     private static ImageManager mInstance;
-    private ImageLoader mImageLoader;
+    private CacheImageLoader mImageLoader;
 
 
     private ImageManager(Context context) {
         Context applicationContext = context.getApplicationContext();
-        mImageLoader = new ImageLoader(
+        mImageLoader = new CacheImageLoader(
                 Volley.newRequestQueue(applicationContext),
-                new Cache(50 * 1024 * 1024));
+                new MemoryCache(50 * 1024 * 1024));
     }
 
     public static synchronized void initializeWith(Context context) {
@@ -34,19 +36,19 @@ public class ImageManager {
         return mInstance.getImageLoader();
     }
 
-    public ImageLoader getImageLoader() {
+    public CacheImageLoader getImageLoader() {
         return mImageLoader;
     }
 
-    public static class Cache
+    public static class MemoryCache
             extends LruCache<String, Bitmap>
             implements ImageLoader.ImageCache {
 
-        public Cache() {
+        public MemoryCache() {
             this(getDefaultLruCacheSize());
         }
 
-        public Cache(int sizeInKiloBytes) {
+        public MemoryCache(int sizeInKiloBytes) {
             super(sizeInKiloBytes);
         }
 
@@ -69,6 +71,26 @@ public class ImageManager {
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
             final int cacheSize = maxMemory / 8;
             return cacheSize;
+        }
+    }
+
+    public class CacheImageLoader extends ImageLoader {
+
+        private final LruCache mMemoryCache;
+        private final Cache mDiskCache;
+
+        public CacheImageLoader(RequestQueue queue, MemoryCache memoryCache) {
+            super(queue, memoryCache);
+            mMemoryCache = memoryCache;
+            mDiskCache = queue.getCache();
+        }
+
+        public LruCache getMemoryCache() {
+            return mMemoryCache;
+        }
+
+        public Cache getDiskCache() {
+            return mDiskCache;
         }
     }
 }
