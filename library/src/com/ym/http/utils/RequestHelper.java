@@ -25,12 +25,6 @@ public class RequestHelper {
     public static final int DEFAULT_POOL_SIZE = 4;
     public static final int DEFAULT_DISK_USAGE_BYTES = 50 * 1024 * 1024;
 
-    public static RequestQueue newRedirectRequestQueue(Context context, String cachePath) {
-        DiskBasedCache cache = new DiskBasedCache(
-                RequestHelper.createInternalCacheDir(context, cachePath));
-        return newRedirectRequestQueue(context, cache);
-    }
-
     public static RequestQueue newRedirectRequestQueue(Context context, DiskBasedCache cache) {
         RequestQueue queue = new RequestQueue(
                 cache,
